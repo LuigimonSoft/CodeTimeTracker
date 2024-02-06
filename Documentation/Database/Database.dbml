@@ -1,0 +1,149 @@
+Project CodeTimeTracker {
+  database_type: 'mssql'
+  note: 'Code time tracker '
+}
+
+
+
+TABLE Users {
+  UserID int [increment, pk , note: '(Primary Key): A unique identifier for each user.']
+  Username varchar(255) [not null, note: 'The user\'s chosen username.']
+  Email varchar(255) [not null, unique, note: 'The user\'s email address. It must be unique.']
+  Active bit [not null, default: 1, note: ' It is a flag that indicates if the user is active.']
+  CreatedAt datetime [not null, default: 'GETDATE()', note:'The date and time when the record was created']
+  CreatedBy int [null, note:'The ID of the user who created the record. Referencing the UserID from the Users table']
+  UpdateAt datetime [null, note: 'The date and time when the record was last updated.']
+  UpdatedBy int [null, note: 'The ID of the user who last updated the record.Referencing the UserID from the Users table']
+  DeletedAt datetime [null,note: 'The date and time when the record was marked as deleted']
+  DeletedBy int [null, note:'Referencing the UserID from the Users table']
+
+  indexes {
+    UserID [PK]
+    Username [name: 'idx_username', note:'An index on the Username field to speed up search and query operations based on the username.']
+  }
+
+  note: 'Stores information about the users of the CodeTimeTracker application.'
+}
+
+TABLE UserPreferences {
+  UserPreferenceID int [increment, PK, note: '(Primary Key): A unique identifier for each user preference.' ]
+  UserID int [not null, ref: > Users.UserID, note: '(Foreign Key): Links to the UserID in the Users table.']
+  PreferenceType varchar(255) [not null, note: 'Type of preference (e.g., notification settings, theme).']
+  PreferenceValue varchar(255) [not null, note:'The value of the specified preference']
+  Active bit [not null, default: 1, note: ' It is a flag that indicates if the user is active.']
+  CreatedAt datetime [not null, default: 'GETDATE()', note:'The date and time when the record was created']
+  CreatedBy int [null, note:'The ID of the user who created the record. Referencing the UserID from the Users table']
+  UpdateAt datetime [null, note: 'The date and time when the record was last updated.']
+  UpdatedBy int [null, note: 'The ID of the user who last updated the record.Referencing the UserID from the Users table']
+  DeletedAt datetime [null,note: 'The date and time when the record was marked as deleted']
+  DeletedBy int [null, note:'Referencing the UserID from the Users table']
+
+
+  note:'This table allows storing various preferences for each user as key-value pairs.'
+  
+  indexes {
+    UserPreferenceID [pk]
+  }
+}
+
+Table Activities {
+  ActivityID int [pk, note: 'A unique identifier for each activity.']
+  UserID int [ref: > Users.UserID, not null, note: 'The ID of the user who performed the activity.']
+  ActivityDate date [not null, note: 'The date of the activity.']
+  StartTime time [note: 'When the activity started.']
+  EndTime time [note: 'When the activity ended.']
+  Description TEXT [note: 'A text description of the activity.']
+  Active bit [not null, default: 1, note: ' It is a flag that indicates if the user is active.']
+  CreatedAt datetime [not null, default: 'GETDATE()', note:'The date and time when the record was created']
+  CreatedBy int [null, note:'The ID of the user who created the record. Referencing the UserID from the Users table']
+  UpdateAt datetime [null, note: 'The date and time when the record was last updated.']
+  UpdatedBy int [null, note: 'The ID of the user who last updated the record.Referencing the UserID from the Users table']
+  DeletedAt datetime [null,note: 'The date and time when the record was marked as deleted']
+  DeletedBy int [null, note:'Referencing the UserID from the Users table']
+
+  note:'Records activities done by users'
+
+  Indexes {
+    (ActivityDate) [name: 'idx_activity_date', note: 'Improves performance on queries filtered by activity date.']
+  }
+}
+
+Table Tags {
+  TagID int [pk, note: 'A unique identifier for each tag.']
+  CompanyID int [ref: > Companies.CompanyID, not null, note: 'Links to the CompanyID in the Companies table. Identifies which company the tag belongs to.']
+  TagName varchar(255) [unique, note: 'The name of the tag.']
+  Active bit [not null, default: 1, note: ' It is a flag that indicates if the user is active.']
+  CreatedAt datetime [not null, default: 'GETDATE()', note:'The date and time when the record was created']
+  CreatedBy int [null, note:'The ID of the user who created the record. Referencing the UserID from the Users table']
+  UpdateAt datetime [null, note: 'The date and time when the record was last updated.']
+  UpdatedBy int [null, note: 'The ID of the user who last updated the record.Referencing the UserID from the Users table']
+  DeletedAt datetime [null,note: 'The date and time when the record was marked as deleted']
+  DeletedBy int [null, note:'Referencing the UserID from the Users table']
+
+  note: 'Manages tags that can be assigned to activities.'
+}
+
+Table ActivitiesTags {
+  ActivityID int [pk, ref: > Activities.ActivityID, not null, note: 'Links to the ActivityID in the Activities table.']
+  TagID int [pk, ref: > Tags.TagID, not null, note: 'Links to the TagID in the Tags table.']
+  Active bit [not null, default: 1, note: ' It is a flag that indicates if the user is active.']
+  CreatedAt datetime [not null, default: 'GETDATE()', note:'The date and time when the record was created']
+  CreatedBy int [null, note:'The ID of the user who created the record. Referencing the UserID from the Users table']
+  UpdateAt datetime [null, note: 'The date and time when the record was last updated.']
+  UpdatedBy int [null, note: 'The ID of the user who last updated the record.Referencing the UserID from the Users table']
+  DeletedAt datetime [null,note: 'The date and time when the record was marked as deleted']
+  DeletedBy int [null, note:'Referencing the UserID from the Users table']
+
+  note:'A junction table for many-to-many relationships between activities and tags.'
+}
+
+Table Sprints {
+  SprintID int [pk, note: 'A unique identifier for each sprint.']
+  CompanyID int [ref: > Companies.CompanyID, not null, note: 'Links to the CompanyID in the Companies table. Identifies which company the sprint belongs to.']
+  Name varchar(255) [not null, note: 'Name of the sprint']
+  SprintNumber int [null, note: 'The number of the sprint']
+  StartDate date [not null, note: 'The starting date of the sprint.']
+  EndDate date [not null, note: 'The ending date of the sprint.']
+  Description TEXT [note: 'A text description of the sprint.']
+  Active bit [not null, default: 1, note: ' It is a flag that indicates if the user is active.']
+  CreatedAt datetime [not null, default: 'GETDATE()', note:'The date and time when the record was created']
+  CreatedBy int [null, note:'The ID of the user who created the record. Referencing the UserID from the Users table']
+  UpdateAt datetime [null, note: 'The date and time when the record was last updated.']
+  UpdatedBy int [null, note: 'The ID of the user who last updated the record.Referencing the UserID from the Users table']
+  DeletedAt datetime [null,note: 'The date and time when the record was marked as deleted']
+  DeletedBy int [null, note:'Referencing the UserID from the Users table']
+
+  note:'Stores information about sprints.'
+
+  Indexes {
+    (Name) [name: 'idx_Name_Sprint', note:'Enhances search efficiency for sprints within specific Name.']
+    (StartDate, EndDate) [name: 'idx_sprint_dates', note: 'Enhances search efficiency for sprints within specific date ranges.']
+  }
+}
+
+Table TagsSprints {
+  TagID int [pk, ref: > Tags.TagID, not null, note: 'Links to the TagID in the Tags table.']
+  SprintID int [pk, ref: > Sprints.SprintID, not null, note: 'Links to the SprintID in the Sprints table.']
+  Active bit [not null, default: 1, note: ' It is a flag that indicates if the user is active.']
+  CreatedAt datetime [not null, default: 'GETDATE()', note:'The date and time when the record was created']
+  CreatedBy int [null, note:'The ID of the user who created the record. Referencing the UserID from the Users table']
+  UpdateAt datetime [null, note: 'The date and time when the record was last updated.']
+  UpdatedBy int [null, note: 'The ID of the user who last updated the record.Referencing the UserID from the Users table']
+  DeletedAt datetime [null,note: 'The date and time when the record was marked as deleted']
+  DeletedBy int [null, note:'Referencing the UserID from the Users table']
+
+  note:'Connects tags with sprints.'
+}
+
+Table Companies {
+  CompanyID int [pk, note: 'A unique identifier for each company.']
+  CompanyName varchar(255) [unique, note: 'The name of the company.']
+  CreatedAt datetime [not null, note: 'The date and time when the company record was created.']
+  CreatedBy int [not null, note: 'The ID of the user who created the company record.']
+  UpdatedAt datetime [note: 'The date and time when the company record was last updated.']
+  UpdatedBy int [note: 'The ID of the user who last updated the company record.']
+  DeletedAt datetime [note: 'The date and time when the company record was marked as deleted. Optional for logical deletion.']
+  DeletedBy int [note: 'The ID of the user who marked the company record as deleted. Optional for logical deletion.']
+
+  note: 'Companies of the sprint'
+}
