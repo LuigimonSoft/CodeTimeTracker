@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:CodeTimeTracker"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary Source="Themes/DarkTheme.xaml" x:Key="theme"/>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
