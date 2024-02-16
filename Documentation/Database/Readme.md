@@ -1,5 +1,20 @@
 # CodeTimeTracker Database Documentation
 
+## Summary
+- [Introduction](#introduction)
+- [Database Type](#database-type)
+- [Table Structure](#table-structure)
+  - [Users](#users)
+  - [Activities](#activities)
+  - [UserPreferences](#user-preferences)
+  - [Tags](#tags)
+  - [ActivitiesTags](#activities-tags)
+  - [Sprints](#sprints)
+  - [TagsSprints](#tags-sprints)
+  - [Companies](#companies)
+- [Relationships](#relationships)
+- [Database Diagram](#database-Diagram)
+
 ## Introduction
 
 This document outlines the database schema for the CodeTimeTracker project, a system designed to track coding activities and preferences for users. The database is structured to store user information, preferences, activities, tags associated with these activities, companies, sprints, and the relationships between tags and sprints.
